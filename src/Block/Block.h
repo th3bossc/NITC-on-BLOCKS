@@ -14,6 +14,7 @@ private:
     std::string blockHash;
     std::string prevBlockHash;
     std::vector<Transaction> transactions;
+    int nonce;
 public:
     Block(std::vector<Transaction>& transactions, Block* prev);
     ~Block();

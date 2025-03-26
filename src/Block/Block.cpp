@@ -14,7 +14,24 @@ Block::Block(std::vector<Transaction>& transactions, Block* prev) {
         this->blockNumber = 1;
         this->prevBlockHash = "0";
     }
-    this->blockHash = Sha256::generateHash(this->prevBlockHash + std::to_string(this->blockNumber) + this->merkleRoot.get());
+
+    std::stringstream ss;
+    ss << this->prevBlockHash << this->blockNumber << this->merkleRoot.get();
+
+    std::string hash = Sha256::generateHash(ss.str());
+
+    int nonce = 0;
+    while (true) {
+        std::string hashWithNonce = Sha256::generateHash(hash + std::to_string(nonce));
+        if (hashWithNonce.back() == '0') {
+            break;
+        }
+
+        nonce++;
+    }
+
+    this->blockHash = hash;
+    this->nonce = nonce;
 }
 
 Block::~Block() {
@@ -34,4 +51,5 @@ void Block::print() {
     std::cout << ']';
     std::cout << std::endl;
     std::cout << merkleRoot.get() << std::endl;
+    std::cout << nonce << std::endl;
 }

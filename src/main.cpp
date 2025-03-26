@@ -7,7 +7,6 @@ using namespace std;
 
 #define NUM_TRANSACTIONS_PER_NODE 4
 
-
 int main(int argc, char* argv[]) {
     auto blockchain = Blockchain();
 
@@ -46,6 +45,9 @@ int main(int argc, char* argv[]) {
         transactions.push_back(transaction);
     }
 
+    int blockReward;
+    cin >> blockReward;
+
     int numMiners;
     cin >> numMiners;
 
@@ -62,6 +64,7 @@ int main(int argc, char* argv[]) {
 
         auto miner = Miner(name, computationScore, blockHashScoreArray);
         miners.push_back(miner);
+        Account::insert(miner.getName(), 0);
     }
 
     sort(transactions.begin(), transactions.end(), [&](Transaction& t1, Transaction& t2) {
@@ -78,41 +81,89 @@ int main(int argc, char* argv[]) {
 
 
 
+    // vector<Transaction> validTransactions;
+    // for (auto& transaction : transactions) {
+    //     if (transaction.validate()) {
+    //         validTransactions.push_back(transaction);
+    //         numValidTransactions++;
+    //     }
+    // }
+
+    // int numBlocks = ceil(numValidTransactions / NUM_TRANSACTIONS_PER_NODE);
+
+    // for (int i = 0; i < numValidTransactions; i += NUM_TRANSACTIONS_PER_NODE) {
+    //     int start = i;
+    //     int end = min(i + NUM_TRANSACTIONS_PER_NODE, numValidTransactions);
+
+    //     vector<Transaction> subset;
+    //     for (int j = start; j < end; j++)
+    //         subset.push_back(validTransactions[j]);
+
+    //     auto block = Block(subset, blockchain.tail());
+
+    //     int blockNumber = block.getBlockNumber();
+
+
+    //     Miner* minerForBlock = NULL;
+    //     int maxBlockSealingScore = -1;
+    //     for (auto& miner : miners) {
+    //         int sealingScore = miner.computeSealingScore(blockNumber);
+    //         if (sealingScore > maxBlockSealingScore) {
+    //             minerForBlock = &miner;
+    //             maxBlockSealingScore = sealingScore;
+    //         }
+    //     }
+    //     char minerId = minerForBlock->getName();
+    //     block.setMiner(minerId);
+    //     int currentMinerBalance = Account::get(minerId);
+    //     Account::set(minerId, currentMinerBalance + blockReward);
+    //     blockchain.insert(block);
+    // }
+
+    // blockchain.print();
+
+
+    int numCurrentValid = 0;
     vector<Transaction> validTransactions;
-    for (auto& transaction : transactions) {
-        if (transaction.validate()) {
-            validTransactions.push_back(transaction);
-            numValidTransactions++;
-        }
-    }
+    int i = 0;
+    while (i <= numTransactions) {
+        cout << numCurrentValid << ' ' << i << ' ' << numTransactions << endl;
+        if (numCurrentValid == NUM_TRANSACTIONS_PER_NODE || i == numTransactions) {
+            if (validTransactions.empty())
+                break;
+            auto block = Block(
+                validTransactions,
+                blockchain.tail()
+            );
 
-    int numBlocks = ceil(numValidTransactions / NUM_TRANSACTIONS_PER_NODE);
+            int blockNumber = block.getBlockNumber();
 
-    for (int i = 0; i < numValidTransactions; i += NUM_TRANSACTIONS_PER_NODE) {
-        int start = i;
-        int end = min(i + NUM_TRANSACTIONS_PER_NODE, numValidTransactions);
-
-        vector<Transaction> subset;
-        for (int j = start; j < end; j++)
-            subset.push_back(validTransactions[j]);
-
-        auto block = Block(subset, blockchain.tail());
-
-        int blockNumber = block.getBlockNumber();
-
-
-        Miner* minerForBlock = NULL;
-        int maxBlockSealingScore = -1;
-        for (auto& miner : miners) {
-            int sealingScore = miner.computeSealingScore(blockNumber);
-            if (sealingScore > maxBlockSealingScore) {
-                minerForBlock = &miner;
-                maxBlockSealingScore = sealingScore;
+            Miner* minerForBlock = NULL;
+            int maxBlockSealingScore = -1;
+            for (auto& miner : miners) {
+                int sealingScore = miner.computeSealingScore(blockNumber);
+                if (sealingScore > maxBlockSealingScore) {
+                    minerForBlock = &miner;
+                    maxBlockSealingScore = sealingScore;
+                }
             }
-        }
+            char minerId = minerForBlock->getName();
+            block.setMiner(minerId);
+            int currentMinerBalance = Account::get(minerId);
+            Account::set(minerId, currentMinerBalance + blockReward);
+            blockchain.insert(block);
 
-        block.setMiner(minerForBlock->getName());
-        blockchain.insert(block);
+            validTransactions.clear();
+            numCurrentValid = 0;
+        }
+        else if (transactions[i].validate()) {
+            validTransactions.push_back(transactions[i]);
+            numCurrentValid++;
+            i++;
+        }
+        else {
+            i++;
+        }
     }
 
     blockchain.print();

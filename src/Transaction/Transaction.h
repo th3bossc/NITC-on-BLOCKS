@@ -11,16 +11,18 @@ private:
     AccountName sender;
     AccountName receiver;
     int amount;
-    int extraData;
+    int incentive;
     bool valid;
 
 public:
-    Transaction(AccountName sender, AccountName receiver, int amount, int extraData);
+    Transaction(AccountName sender, AccountName receiver, int amount, int incentive);
     ~Transaction();
 
     AccountName getSender();
+    bool validate();
     AccountName getReceiver();
     int getAmount();
+    int getIncentive();
     std::string hash();
     void print();
     bool isValid();

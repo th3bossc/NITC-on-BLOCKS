@@ -4,7 +4,7 @@
 #include <algorithm>
 using namespace std;
 
-#define NUM_TRANSACTIONS_PER_NODE 3
+#define NUM_TRANSACTIONS_PER_NODE 4
 
 
 int main(int argc, char* argv[]) {

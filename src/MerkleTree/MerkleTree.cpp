@@ -43,27 +43,27 @@ bool MerkleTree::insert(Transaction transaction) {
         if (!sumHash)
             return false;
     }
-    // else if (this->numNodes == 3) {
-    //     std::string h1h2__Value = this->root->getLeft()->get();
-    //     auto h3Node = this->root->getRight();
-    //     std::string h3 = h3Node->get();
-    //     std::string h4 = transaction.hash();
-    //     std::string h3h4__Value = h3 + h4;
+    else if (this->numNodes == 3) {
+        std::string h1h2__Value = this->root->getLeft()->get();
+        auto h3Node = this->root->getRight();
+        std::string h3 = h3Node->get();
+        std::string h4 = transaction.hash();
+        std::string h3h4__Value = Sha256::generateHash(h3 + h4);
 
 
-    //     auto newNode = this->createLeafNode(h4);
-    //     if (!newNode)
-    //         return false;
-    //     auto sumHash = this->createInternalNode(Sha256::generateHash(h3h4__Value), h3Node, newNode);
-    //     if (!sumHash)
-    //         return false;
-    //     auto h1h2h3__Node = this->root;
-    //     auto newRoot = this->createRootNode(Sha256::generateHash(h1h2__Value + h3h4__Value), this->root->getLeft(), newNode);
-    //     if (!newRoot)
-    //         return false;
-    //     delete h1h2h3__Node;
+        auto newNode = this->createLeafNode(h4);
+        if (!newNode)
+            return false;
+        auto sumHash = this->createInternalNode(h3h4__Value, h3Node, newNode);
+        if (!sumHash)
+            return false;
+        auto h1h2h3__Node = this->root;
+        auto newRoot = this->createRootNode(Sha256::generateHash(h1h2__Value + h3h4__Value), this->root->getLeft(), newNode);
+        if (!newRoot)
+            return false;
+        delete h1h2h3__Node;
 
-    // }
+    }
     else {
         return false;
     }

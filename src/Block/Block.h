@@ -7,6 +7,7 @@
 #include "../Sha3/Sha256.h"
 #include <vector>
 #include <iostream>
+#include "../Miner/Miner.h"
 class Block {
 private:
     int blockNumber;
@@ -15,11 +16,13 @@ private:
     std::string prevBlockHash;
     std::vector<Transaction> transactions;
     int nonce;
+    char minerId;
 public:
     Block(std::vector<Transaction>& transactions, Block* prev);
     ~Block();
 
     int getBlockNumber();
+    void setMiner(char minerId);
     void print();
 };
 

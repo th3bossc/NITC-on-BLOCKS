@@ -2,6 +2,7 @@
 #include "Blockchain/Blockchain.h"
 #include <math.h>
 #include <algorithm>
+#include "Miner/Miner.h"
 using namespace std;
 
 #define NUM_TRANSACTIONS_PER_NODE 4
@@ -45,6 +46,24 @@ int main(int argc, char* argv[]) {
         transactions.push_back(transaction);
     }
 
+    int numMiners;
+    cin >> numMiners;
+
+    vector<Miner> miners;
+    for (int i = 0; i < numMiners; i++) {
+        char name;
+        int computationScore;
+        int blockHashScoreArray[HASH_SCORE_ARRAY_SIZE];
+
+        cin >> name;
+        cin >> computationScore;
+        for (int j = 0; j < HASH_SCORE_ARRAY_SIZE; j++)
+            cin >> blockHashScoreArray[j];
+
+        auto miner = Miner(name, computationScore, blockHashScoreArray);
+        miners.push_back(miner);
+    }
+
     sort(transactions.begin(), transactions.end(), [&](Transaction& t1, Transaction& t2) {
         if (t1.getIncentive() > t2.getIncentive()) {
             return true;
@@ -79,6 +98,20 @@ int main(int argc, char* argv[]) {
 
         auto block = Block(subset, blockchain.tail());
 
+        int blockNumber = block.getBlockNumber();
+
+
+        Miner* minerForBlock = NULL;
+        int maxBlockSealingScore = -1;
+        for (auto& miner : miners) {
+            int sealingScore = miner.computeSealingScore(blockNumber);
+            if (sealingScore > maxBlockSealingScore) {
+                minerForBlock = &miner;
+                maxBlockSealingScore = sealingScore;
+            }
+        }
+
+        block.setMiner(minerForBlock->getName());
         blockchain.insert(block);
     }
 

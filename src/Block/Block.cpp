@@ -42,6 +42,10 @@ int Block::getBlockNumber() {
     return this->blockNumber;
 }
 
+void Block::setMiner(char minerId) {
+    this->minerId = minerId;
+}
+
 void Block::print() {
     std::cout << blockNumber << std::endl;
     std::cout << blockHash << std::endl;
@@ -51,5 +55,5 @@ void Block::print() {
     std::cout << ']';
     std::cout << std::endl;
     std::cout << merkleRoot.get() << std::endl;
-    std::cout << nonce << std::endl;
+    std::cout << nonce << ' ' << minerId << std::endl;
 }

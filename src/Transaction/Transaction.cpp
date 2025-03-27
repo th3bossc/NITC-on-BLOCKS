@@ -1,10 +1,10 @@
 #include "Transaction.h"
 
 Transaction::Transaction(AccountName sender, AccountName receiver, int amount, int incentive) {
-    this->sender = sender;
-    this->receiver = receiver;
-    this->amount = amount;
-    this->incentive = incentive;
+    this->_sender = sender;
+    this->_receiver = receiver;
+    this->_amount = amount;
+    this->_incentive = incentive;
 }
 
 Transaction::~Transaction() {
@@ -12,47 +12,47 @@ Transaction::~Transaction() {
 }
 
 bool Transaction::validate() {
-    int senderBalance = Account::get(sender);
-    int receiverBalance = Account::get(receiver);
+    int senderBalance = Account::get(_sender);
+    int receiverBalance = Account::get(_receiver);
 
-    if (senderBalance < amount) {
+    if (senderBalance < _amount) {
         this->valid = false;
         return false;
     }
     else {
         this->valid = true;
-        Account::set(sender, senderBalance - amount);
-        Account::set(receiver, receiverBalance + amount);
+        Account::set(_sender, senderBalance - _amount);
+        Account::set(_receiver, receiverBalance + _amount);
         return true;
     }
 
 }
 
-AccountName Transaction::getSender() {
-    return this->sender;
+AccountName Transaction::sender() {
+    return this->_sender;
 }
 
-AccountName Transaction::getReceiver() {
-    return this->receiver;
+AccountName Transaction::receiver() {
+    return this->_receiver;
 }
 
-int Transaction::getAmount() {
-    return this->amount;
+int Transaction::amount() {
+    return this->_amount;
 }
 
-int Transaction::getIncentive() {
-    return this->incentive;
+int Transaction::incentive() {
+    return this->_incentive;
 }
 
 std::string Transaction::hash() {
     std::stringstream ss;
-    ss << sender << incentive << receiver << amount;
+    ss << _sender << _incentive << _receiver << _amount;
     std::string result = ss.str();
     return Sha256::generateHash(result);
 }
 
 void Transaction::print() {
-    std::cout << "['" << sender << "', '" << receiver << "', " << amount << ", " << incentive << "]";
+    std::cout << "['" << _sender << "', '" << _receiver << "', " << _amount << ", " << _incentive << "]";
 }
 
 bool Transaction::isValid() {

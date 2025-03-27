@@ -8,21 +8,21 @@
 #include <string>
 class Transaction {
 private:
-    AccountName sender;
-    AccountName receiver;
-    int amount;
-    int incentive;
+    AccountName _sender;
+    AccountName _receiver;
+    int _amount;
+    int _incentive;
     bool valid;
 
 public:
     Transaction(AccountName sender, AccountName receiver, int amount, int incentive);
     ~Transaction();
 
-    AccountName getSender();
+    AccountName sender();
     bool validate();
-    AccountName getReceiver();
-    int getAmount();
-    int getIncentive();
+    AccountName receiver();
+    int amount();
+    int incentive();
     std::string hash();
     void print();
     bool isValid();

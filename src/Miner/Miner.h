@@ -7,7 +7,7 @@
 
 class Miner {
 private:
-    char name;
+    char _name;
     int computationScore;
     int blockHashScoreArray[HASH_SCORE_ARRAY_SIZE];
 
@@ -15,8 +15,10 @@ public:
     Miner(char name, int computation_score, int block_hash_score_array[HASH_SCORE_ARRAY_SIZE]);
     ~Miner();
     void print();
-    char getName();
+    char name();
     int computeSealingScore(int blockNumber);
+
+    bool operator== (const Miner& other);
 };
 
 #endif

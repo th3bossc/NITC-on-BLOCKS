@@ -4,6 +4,7 @@
 #include <string>
 #include "../Transaction/Transaction.h"
 #include <vector>
+#define NUM_TRANSACTIONS_PER_NODE 4
 
 class MerkleNode {
 private:

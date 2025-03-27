@@ -17,13 +17,23 @@ private:
     std::vector<Transaction> transactions;
     int nonce;
     char minerId;
+
+    Block* _prev;
+    Block* _next;
 public:
     Block(std::vector<Transaction>& transactions, Block* prev);
+    Block(Block* prev);
     ~Block();
 
+    void insert(Transaction transaction);
     int getBlockNumber();
     void setMiner(char minerId);
     void print();
+    bool empty();
+    bool full();
+
+    Block* prev();
+    Block* next();
 };
 
 #endif
